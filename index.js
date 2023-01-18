@@ -94,9 +94,7 @@ app.listen(3000, ()=> {
 })
 
 /*
-(1) how programs communicate in what order to each other for a given purpose, 
-(2) what you learned in this project and 
-(3) how can this project be further extended.
-
-
+1) Programs send each other requests like GET and POST to interact as needed. 
+2) I learned how to run the basics of a server by sending GET, POST, PUT, and DELETE requests. 
+3) In the future, I could add actual song files and play them. 
 */
