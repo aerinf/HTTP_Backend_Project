@@ -3,83 +3,100 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 
-const songs = [
-    {id: 1, name: "popsong1", genre: "pop"},
-    {id: 2, name: "hiphopsong1", genre: "hiphop"},
-    {id: 3, name: "rapsong1", genre: "rap"},
-    {id: 4, name: "classicalsong1", genre: "classical"},
-    {id: 5, name: "rocksong1", genre: "rock"},
-    {id: 6, name: "jazzsong1", genre: "jazz"},
-    {id: 7, name: "bluessong1", genre: "blues"},
-    {id: 8, name: "electronicsong1", genre: "electronic"}
+const genres = [
+    {id: 1, name: "pop"},
+    {id: 2, name: "hiphop"},
+    {id: 3, name: "rap"},
+    {id: 4, name: "classical"},
+    {id: 5, name: "rock"},
+    {id: 6, name: "jazz"},
+    {id: 7, name: "blues"},
+    {id: 8, name: "electronic"}
 ];
+
+
+//HTTP GET REQUESTS
 app.get('/', (req,res)=>{
     res.status(200).send('Welcome to my music app!');
 });
-app.get('/api/songs/genres', (req,res)=>{
-    for (let i = 0; i < songs.length; i++) {
-        res.status(200).send(songs[i][genre]);
+app.get('/api/genres', (req,res)=>{
+    res.send(genres);
+});
+app.get('/api/genres/:id', (req,res)=>{
+    const genre = genres.find(c=>c.id === parseInt(req.params.id));
+    if(!genre){
+        res.status(404).send("The genre with the given ID was not found");
+        return
     }
+    res.send(genre);
+})
+app.get('/api/genres/date', (req,res)=>{
+    //TK: filter by month/year
 });
-app.get('/api/songs', (req,res)=>{
-    res.send(songs);
-});
-// app.get('/api/songs/:id', (req,res)=>{
-//     const course = courses.find(c=>c.id === parseInt(req.params.id));
-//     if(!course){
-//         res.status(404).send("The course with the given ID was not found");
-//         return
-//     }
-//     res.send(course);
-// })
-
 
 
 //HTTP POST REQUESTS
-app.post('/api/courses', (req,res) => {
-        const course ={
+app.post('/api/genres', (req,res) => {
+        const genre ={
             //we assign an ID and a name property
-            id: courses.length +1,
+            id: genres.length +1,
             name:req.body.name
         }
-        if (course.name.length>=3) {
+        if (genre.name.length>=3 && genre.name<=15) {
 
         //next step: push it to the array
-        courses.push(course);
+        courses.push(genre);
+        res.status(200).send(genre);
         //next step: the server should return the new resource to the client in the body of the response 
         }
-        res.status(200).send(course);
+        else {
+            res.status(400).send("The genre name should be between 3 and 15 characters.");
+        }
+        
 });
+
+
 //HTTP PUT REQUESTS
-app.put('/api/courses/:id', (req,res)=>{
-    //Write the code in order to look up the course, if not existing return a 404
-    const course = courses.find(c=>c.id === parseInt(req.params.id));
-    if(!course){
-        res.status(404).send("The course with the given ID was not found");
+app.put('/api/genres/:id', (req,res)=>{
+    //Write the code in order to look up the genre, if not existing return a 404
+    const genre = genres.find(c=>c.id === parseInt(req.params.id));
+    if(!genre){
+        res.status(404).send("The genre with the given ID was not found");
         return
     }
     else {
-        course["name"] = req.body.name;
-        res.status(200).send(course);
+        if (genre.name.length>=3 && genre.name<=15) {
+            genre["name"] = req.body.name;
+            res.status(200).send(genre);
+        }
+        else {
+            res.status(400).send("The genre name should be between 3 and 15 characters.");
+        }
     }
 });
-//HTTP GET REQUESTS
-app.delete('/api/courses/:id', (req,res)=>{
-    const course = courses.find(c=>c.id === parseInt(req.params.id));
-    if(!course){
-        res.status(404).send("The course with the given ID was not found");
+
+
+//HTTP DELETE REQUESTS
+app.delete('/api/genres/:id', (req,res)=>{
+    const genre = genres.find(c=>c.id === parseInt(req.params.id));
+    if(!genre){
+        res.status(400).send("The genre with the given ID was not found");
         return
     }
     else {
-        courses.splice(courses.indexOf(course));
-        res.status(200).send("Course was deleted.");
+        genres.splice(genres.indexOf(genre));
+        res.status(200).send("Genre was deleted.");
     }
 });
 
 app.listen(3000, ()=> {
     console.log('Listening on port 3000 ...')
 })
-//At root the server responds "Hello there" as expected
-//at /api/courses all courses are returned
-//at /api/courses/n, course with the id of n is shown
-//If the return keyword is not placed, the server will not connect
+
+/*
+(1) how programs communicate in what order to each other for a given purpose, 
+(2) what you learned in this project and 
+(3) how can this project be further extended.
+
+
+*/
