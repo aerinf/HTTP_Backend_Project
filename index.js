@@ -16,22 +16,35 @@ const genres = [
 
 
 //HTTP GET REQUESTS
+//root
 app.get('/', (req,res)=>{
     res.status(200).send('Welcome to my music app!');
 });
+//genres
 app.get('/api/genres', (req,res)=>{
-    res.send(genres);
+    if(!genres){
+        res.status(404).send("Genres were not found");
+        return
+    }
+    res.status(200).send(genres);
 });
+//genres by id
 app.get('/api/genres/:id', (req,res)=>{
     const genre = genres.find(c=>c.id === parseInt(req.params.id));
     if(!genre){
         res.status(404).send("The genre with the given ID was not found");
         return
     }
-    res.send(genre);
+    res.status(200).send(genre);
 })
-app.get('/api/genres/date', (req,res)=>{
-    //TK: filter by month/year
+//genres by date
+app.get('/api/genres/year/month', (req,res)=>{
+    const genre = genres.filter(genre => genre.year=== parseInt(req.params.year) && genre.month=== parseInte(req.params.month));
+    if (!genre) {
+        res.status(404).send("No results found for " + req.params.year + " " + req.params.month);
+        return
+    }
+    res.status(200).send(genre);
 });
 
 
